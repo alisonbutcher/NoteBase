@@ -2,7 +2,9 @@
 
 This document describes the local development setup for NoteBase using Docker Compose.
 
-In Phase 1 (local), the full AWS infrastructure is replaced by local equivalents:
+In Phase 1 (local), the full AWS infrastructure is replaced by local equivalents.
+
+Where available, services use [Docker Hardened Images](https://dhi.io) (`dhi.io/...`) — zero known CVEs, signed provenance, SBOM/VEX metadata, and CIS/FIPS/STIG compliant. Requires a free Docker login: `docker login dhi.io`. DynamoDB Local and LocalStack are vendor images with no hardened equivalent.
 
 | AWS Service | Local Equivalent |
 |---|---|
@@ -114,10 +116,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ## Starting Local Development
 
 ```bash
-# authenticate with the Docker Hardened Images registry (once per machine)
-docker login dhi.io
-
-# start all infrastructure services
+# start all infrastructure services (requires docker login dhi.io — see above)
 docker compose up -d
 
 # install dependencies (from monorepo root)
