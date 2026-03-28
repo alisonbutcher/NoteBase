@@ -22,6 +22,10 @@ export default registerAs('app', () => ({
 
   projectionStore: process.env.PROJECTION_STORE ?? 'postgres',
 
+  projection: {
+    pollIntervalMs: parseInt(process.env.PROJECTION_POLL_INTERVAL_MS ?? '500', 10),
+  },
+
   dynamodb: {
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.DYNAMODB_REGION ?? 'ap-southeast-2',

@@ -49,7 +49,7 @@ export class PostgresProjectionStore implements IProjectionStore, OnApplicationS
         node.parentId,
         node.position,
         node.depth,
-        JSON.stringify(node.tags),
+        node.tags,
         node.updatedAt,
       ],
     );
@@ -69,7 +69,7 @@ export class PostgresProjectionStore implements IProjectionStore, OnApplicationS
       parent_id: string | null;
       position: number;
       depth: number;
-      tags: string;
+      tags: string[];
       updated_at: string;
     }>(
       `SELECT node_id, content, parent_id, position, depth, tags, updated_at
@@ -87,7 +87,7 @@ export class PostgresProjectionStore implements IProjectionStore, OnApplicationS
         parentId: row.parent_id,
         position: row.position,
         depth: row.depth,
-        tags: JSON.parse(row.tags) as string[],
+        tags: row.tags,
         updatedAt: row.updated_at,
       })),
     };
