@@ -3,9 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "build": "turbo build --filter=!docs",
+    "dev": "turbo dev --filter=!docs",
+    "lint": "turbo lint --filter=!docs",
+    "test": "turbo test --filter=!docs",
     "docs:dev": "pnpm --filter docs start",
     "docs:build": "pnpm --filter docs build"
   },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=24.0.0",
     "pnpm": ">=9.0.0"

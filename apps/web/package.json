@@ -1,0 +1,10 @@
+{
+  "name": "@notebase/web",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "echo \"web: not yet scaffolded\"",
+    "dev": "echo \"web: not yet scaffolded\"",
+    "lint": "echo \"web: not yet scaffolded\""
+  }
+}
