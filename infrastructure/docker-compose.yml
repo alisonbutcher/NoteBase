@@ -23,13 +23,13 @@ services:
         condition: service_healthy
     entrypoint: ['/bin/sh', '-c']
     command:
-      - 'PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U $POSTGRES_USER -d $POSTGRES_DB -f /init.sql'
+      - 'PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U $POSTGRES_USER -d $POSTGRES_DB -f /sql/init.sql'
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - ./sql/init.sql:/init.sql:ro
+      - ./sql:/sql:ro
     restart: on-failure
 
   rabbitmq:
@@ -40,6 +40,8 @@ services:
     ports:
       - '5672:5672'    # AMQP
       - '15672:15672'  # management UI
+    volumes:
+      - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
     healthcheck:
       test: ['CMD', 'rabbitmq-diagnostics', 'ping']
       interval: 10s
@@ -48,17 +50,16 @@ services:
 
   dynamodb-local:
     image: amazon/dynamodb-local:latest
-    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath /data'
+    command: '-jar DynamoDBLocal.jar -sharedDb -inMemory'
     ports:
       - '8000:8000'
-    volumes:
-      - dynamodb_data:/data
 
   localstack:
     image: localstack/localstack:latest
     environment:
       SERVICES: s3
       AWS_DEFAULT_REGION: ap-southeast-2
+      LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: ${LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT:-0}
     ports:
       - '4566:4566'
     volumes:
@@ -66,5 +67,4 @@ services:
 
 volumes:
   postgres_data:
-  dynamodb_data:
   localstack_data:

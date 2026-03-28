@@ -19,8 +19,6 @@ Where available, services use [Docker Hardened Images](https://dhi.io) (`dhi.io/
 ## docker-compose.yml
 
 ```yaml
-version: '3.9'
-
 services:
 
   postgres:
@@ -33,30 +31,56 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./infrastructure/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres-init:
+    image: dhi.io/postgres:18-alpine3.22
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - 'PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U $POSTGRES_USER -d $POSTGRES_DB -f /sql/init.sql'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./sql:/sql:ro
+    restart: on-failure
 
   rabbitmq:
-    image: dhi.io/rabbitmq:4.2-debian13
+    image: dhi.io/rabbitmq:4.2
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - '5672:5672'    # AMQP
       - '15672:15672'  # management UI
+    volumes:
+      - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   dynamodb-local:
     image: amazon/dynamodb-local:latest
-    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath /data'
+    command: '-jar DynamoDBLocal.jar -sharedDb -inMemory'
     ports:
       - '8000:8000'
-    volumes:
-      - dynamodb_data:/data
 
   localstack:
     image: localstack/localstack:latest
     environment:
       SERVICES: s3
       AWS_DEFAULT_REGION: ap-southeast-2
+      LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: ${LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT:-0}
     ports:
       - '4566:4566'
     volumes:
@@ -64,9 +88,15 @@ services:
 
 volumes:
   postgres_data:
-  dynamodb_data:
   localstack_data:
 ```
+
+### Implementation notes
+
+- **Postgres init**: The dhi.io hardened image does not process `/docker-entrypoint-initdb.d/`. A separate `postgres-init` container runs `sql/init.sql` via `psql` once Postgres is healthy, then exits.
+- **RabbitMQ management UI**: The hardened image does not enable the management plugin by default. `infrastructure/rabbitmq/enabled_plugins` mounts `[rabbitmq_management].` into the container — this is local-only.
+- **DynamoDB Local**: Runs in-memory (`-inMemory`). Data does not persist between restarts. Tables are created programmatically by the application on startup (Phase 2).
+- **LocalStack**: Requires a free LocalStack account, or set `LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT=1` in `infrastructure/.env` to snooze the requirement. The S3 bucket (`notebase-attachments`) does not persist between restarts and must be created on first use (Phase 2).
 
 ---
 
