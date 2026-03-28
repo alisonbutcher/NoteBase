@@ -8,30 +8,29 @@ This document describes the AWS infrastructure layout for NoteBase — the netwo
 
 Phase 1 is not deployed to AWS. The full stack runs locally via Docker Compose on a developer machine or a single VPS (e.g. a $10/month Hetzner or DigitalOcean instance).
 
-```
-┌─────────────────────────────────────────────┐
-│  Single Host (Docker Compose)               │
-│                                             │
-│  ┌──────────┐   ┌──────────┐               │
-│  │ NestJS   │   │ Next.js  │               │
-│  │ API :3000│   │ Web :3001│               │
-│  └────┬─────┘   └──────────┘               │
-│       │                                     │
-│  ┌────▼──────────────────────┐             │
-│  │  PostgreSQL :5432          │             │
-│  │  - events table            │             │
-│  │  - snapshots table         │             │
-│  │  - projection tables       │             │
-│  │  - tags table              │             │
-│  └───────────────────────────┘             │
-│                                             │
-│  ┌──────────┐  ┌───────────┐  ┌──────────┐ │
-│  │RabbitMQ  │  │DynamoDB   │  │LocalStack│ │
-│  │:5672     │  │Local :8000│  │S3 :4566  │ │
-│  │(unused)  │  │(unused)   │  │(unused)  │ │
-│  └──────────┘  └───────────┘  └──────────┘ │
-│                                             │
-└─────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Host ["Single Host — Docker Compose"]
+        Web["Next.js Web\n:3001"]
+        API["NestJS API\n:3000"]
+        PG[("PostgreSQL :5432\nevents · snapshots · projections · tags")]
+
+        subgraph Inactive ["Available for Phase 2 testing — inactive in Phase 1"]
+            MQ["RabbitMQ :5672\nQUEUE_TRANSPORT=null"]
+            DL["DynamoDB Local :8000\nPROJECTION_STORE=postgres"]
+            LS["LocalStack S3 :4566"]
+        end
+    end
+
+    Web -->|REST| API
+    API -->|TCP / SQL| PG
+
+    style Web fill:#1168BD,color:#fff,stroke:#0B4884
+    style API fill:#1168BD,color:#fff,stroke:#0B4884
+    style PG fill:#1168BD,color:#fff,stroke:#0B4884
+    style MQ fill:#888,color:#fff,stroke:#555
+    style DL fill:#888,color:#fff,stroke:#555
+    style LS fill:#888,color:#fff,stroke:#555
 ```
 
 RabbitMQ, DynamoDB Local, and LocalStack run in Docker Compose but are not active in Phase 1 (`QUEUE_TRANSPORT=null`, `PROJECTION_STORE=postgres`). They are available for Phase 2 testing without changing the Compose file.
@@ -52,79 +51,63 @@ Phase 2 uses two Availability Zones (`ap-southeast-2a`, `ap-southeast-2b`) for r
 
 ### Network Topology
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│  AWS Region: ap-southeast-2                                              │
-│                                                                          │
-│  ┌────────────────────────────────────────────────────────────────────┐  │
-│  │  VPC: 10.0.0.0/16                                                  │  │
-│  │                                                                    │  │
-│  │  ┌──────────────────────────┐  ┌──────────────────────────┐       │  │
-│  │  │  Public Subnet AZ-A      │  │  Public Subnet AZ-B      │       │  │
-│  │  │  10.0.0.0/24             │  │  10.0.1.0/24             │       │  │
-│  │  │                          │  │                          │       │  │
-│  │  │  ┌────────────────────┐  │  │  ┌────────────────────┐  │       │  │
-│  │  │  │  ALB               │  │  │  │  ALB               │  │       │  │
-│  │  │  │  (listener :443)   │  │  │  │  (cross-zone)      │  │       │  │
-│  │  │  └────────────────────┘  │  │  └────────────────────┘  │       │  │
-│  │  │  ┌────────────────────┐  │  │  ┌────────────────────┐  │       │  │
-│  │  │  │  NAT Gateway       │  │  │  │  NAT Gateway       │  │       │  │
-│  │  │  └────────────────────┘  │  │  └────────────────────┘  │       │  │
-│  │  └──────────────────────────┘  └──────────────────────────┘       │  │
-│  │                                                                    │  │
-│  │  ┌──────────────────────────┐  ┌──────────────────────────┐       │  │
-│  │  │  Private Subnet AZ-A     │  │  Private Subnet AZ-B     │       │  │
-│  │  │  10.0.2.0/24             │  │  10.0.3.0/24             │       │  │
-│  │  │                          │  │                          │       │  │
-│  │  │  ┌────────────────────┐  │  │  ┌────────────────────┐  │       │  │
-│  │  │  │  ECS Fargate       │  │  │  │  ECS Fargate       │  │       │  │
-│  │  │  │  API Task          │  │  │  │  API Task          │  │       │  │
-│  │  │  └────────────────────┘  │  │  └────────────────────┘  │       │  │
-│  │  │  ┌────────────────────┐  │  │  ┌────────────────────┐  │       │  │
-│  │  │  │  ECS Fargate       │  │  │  │  ECS Fargate       │  │       │  │
-│  │  │  │  Projection Handler│  │  │  │  Projection Handler│  │       │  │
-│  │  │  └────────────────────┘  │  │  └────────────────────┘  │       │  │
-│  │  └──────────────────────────┘  └──────────────────────────┘       │  │
-│  │                                                                    │  │
-│  │  ┌──────────────────────────┐  ┌──────────────────────────┐       │  │
-│  │  │  Data Subnet AZ-A        │  │  Data Subnet AZ-B        │       │  │
-│  │  │  10.0.4.0/24             │  │  10.0.5.0/24             │       │  │
-│  │  │                          │  │                          │       │  │
-│  │  │  ┌────────────────────┐  │  │  ┌────────────────────┐  │       │  │
-│  │  │  │  RDS Postgres      │  │  │  │  RDS Postgres      │  │       │  │
-│  │  │  │  Primary           │  │  │  │  Standby (Multi-AZ)│  │       │  │
-│  │  │  └────────────────────┘  │  │  └────────────────────┘  │       │  │
-│  │  │  ┌────────────────────┐  │  │  ┌────────────────────┐  │       │  │
-│  │  │  │  Amazon MQ         │  │  │  │  Amazon MQ         │  │       │  │
-│  │  │  │  RabbitMQ Primary  │  │  │  │  RabbitMQ Standby  │  │       │  │
-│  │  │  └────────────────────┘  │  │  └────────────────────┘  │       │  │
-│  │  └──────────────────────────┘  └──────────────────────────┘       │  │
-│  │                                                                    │  │
-│  │  ┌──────────────────────────────────────────────────────────────┐ │  │
-│  │  │  VPC Endpoints (Gateway)                                     │ │  │
-│  │  │  com.amazonaws.ap-southeast-2.s3                             │ │  │
-│  │  │  com.amazonaws.ap-southeast-2.dynamodb                       │ │  │
-│  │  └──────────────────────────────────────────────────────────────┘ │  │
-│  │  ┌──────────────────────────────────────────────────────────────┐ │  │
-│  │  │  VPC Interface Endpoints                                     │ │  │
-│  │  │  com.amazonaws.ap-southeast-2.secretsmanager                 │ │  │
-│  │  │  com.amazonaws.ap-southeast-2.ecr.api                        │ │  │
-│  │  │  com.amazonaws.ap-southeast-2.ecr.dkr                        │ │  │
-│  │  │  com.amazonaws.ap-southeast-2.logs (CloudWatch)              │ │  │
-│  │  └──────────────────────────────────────────────────────────────┘ │  │
-│  └────────────────────────────────────────────────────────────────────┘  │
-│                                                                          │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────────────────┐ │
-│  │  DynamoDB        │  │  S3              │  │  Amazon Cognito          │ │
-│  │  (managed,       │  │  notebase-       │  │  User Pool               │ │
-│  │  no subnet)      │  │  attachments     │  │  (regional endpoint)     │ │
-│  └─────────────────┘  └─────────────────┘  └──────────────────────────┘ │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Internet(["Internet"])
+    R53["Route 53\nnotebase.app"]
 
-Internet
-  │
-  └── Route 53 (notebase.app) ──► ALB (public subnet)
+    subgraph Region ["AWS Region: ap-southeast-2"]
+        subgraph VPC ["VPC: 10.0.0.0/16"]
+            subgraph Public ["Public Tier — 10.0.0.0/24 · 10.0.1.0/24  (2 AZs)"]
+                ALB["Application Load Balancer\nHTTPS :443 · cross-zone"]
+                NAT["NAT Gateways\none per AZ"]
+            end
+
+            subgraph Private ["Private Application Tier — 10.0.2.0/24 · 10.0.3.0/24  (2 AZs)"]
+                API["ECS Fargate — API Service\n2+ tasks spread across AZs"]
+                PH["ECS Fargate — Projection Handler\n2+ tasks spread across AZs"]
+            end
+
+            subgraph Data ["Data Tier — 10.0.4.0/24 · 10.0.5.0/24  (2 AZs, no internet route)"]
+                RDS[("RDS Postgres 16\nPrimary + Multi-AZ Standby")]
+                MQ["Amazon MQ\nRabbitMQ Primary + Standby"]
+            end
+
+            VPCe["VPC Endpoints\nS3 · DynamoDB (Gateway)\nECR · Secrets Manager · CloudWatch (Interface)"]
+        end
+
+        subgraph Managed ["AWS Managed — no subnet"]
+            DDB[("DynamoDB\nOn-demand capacity")]
+            S3["S3\nnotebase-attachments"]
+            Cognito["Amazon Cognito\nUser Pool"]
+        end
+    end
+
+    Internet -->|HTTPS| R53
+    R53 --> ALB
+    ALB -->|:3000| API
+    API -->|SQL :5432| RDS
+    API -->|AMQP :5671| MQ
+    API -->|AWS SDK| VPCe
+    MQ -->|AMQP| PH
+    PH -->|SQL :5432| RDS
+    PH -->|AWS SDK| VPCe
+    Private -->|outbound| NAT
+    VPCe --> DDB & S3
+    API -->|JWKS validation| Cognito
+
+    style ALB fill:#1168BD,color:#fff,stroke:#0B4884
+    style NAT fill:#1168BD,color:#fff,stroke:#0B4884
+    style API fill:#1168BD,color:#fff,stroke:#0B4884
+    style PH fill:#1168BD,color:#fff,stroke:#0B4884
+    style RDS fill:#1168BD,color:#fff,stroke:#0B4884
+    style MQ fill:#1168BD,color:#fff,stroke:#0B4884
+    style VPCe fill:#2d5a8e,color:#fff,stroke:#1a3a5c
+    style DDB fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style S3 fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style Cognito fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style Internet fill:#08427B,color:#fff,stroke:#052E56
+    style R53 fill:#6C6C6C,color:#fff,stroke:#3C3C3C
 ```
 
 ---
@@ -245,19 +228,28 @@ Note: The event store (RDS) is not involved in the read path.
 
 ### Container Image Pipeline
 
-```
-Developer pushes code
-        │
-        ▼
-GitHub Actions CI
-  ├── lint + test
-  ├── docker build
-  ├── docker push ──► ECR (private)
-  └── ECS service update (rolling deploy)
-        │
-        ▼
-ECS pulls new image from ECR
-  └── New task starts ──► health check passes ──► old task drains ──► terminates
+```mermaid
+graph LR
+    Dev(["Developer\npushes code"])
+    CI["GitHub Actions CI\nlint · test · docker build"]
+    ECR["ECR\nprivate registry"]
+    ECS["ECS Service\nrolling deploy"]
+    HC["Health check\npasses"]
+    Done(["Old task drains\nand terminates"])
+
+    Dev --> CI
+    CI -->|docker push| ECR
+    CI -->|service update| ECS
+    ECR -->|pull new image| ECS
+    ECS --> HC
+    HC --> Done
+
+    style Dev fill:#08427B,color:#fff,stroke:#052E56
+    style CI fill:#1168BD,color:#fff,stroke:#0B4884
+    style ECR fill:#1168BD,color:#fff,stroke:#0B4884
+    style ECS fill:#1168BD,color:#fff,stroke:#0B4884
+    style HC fill:#1168BD,color:#fff,stroke:#0B4884
+    style Done fill:#2d6a2d,color:#fff,stroke:#1a4a1a
 ```
 
 - ECR image scanning is enabled. Images with critical vulnerabilities are blocked from deployment.

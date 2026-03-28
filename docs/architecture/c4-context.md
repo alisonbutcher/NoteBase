@@ -3,23 +3,26 @@
 Shows how NoteBase fits into the world and the external systems it depends on.
 
 ```mermaid
-C4Context
-    title System Context Diagram for NoteBase
+graph LR
+    User(["User\nWrites daily notes\nand views tag lens pages"])
+    NoteBase["NoteBase\nDaily note-taking system\nwith tag lens views"]
+    Cognito["Amazon Cognito\nUser auth · JWT issuance"]
+    SES["Amazon SES\nTransactional email"]
+    S3["Amazon S3\nFile and attachment storage"]
+    Vercel["Vercel\nFrontend hosting · CDN"]
 
-    Person(user, "User", "Writes daily notes, views tag lens pages")
+    User -->|HTTPS| NoteBase
+    NoteBase -->|HTTPS| Cognito
+    NoteBase -->|HTTPS| SES
+    NoteBase -->|AWS SDK| S3
+    NoteBase -->|HTTPS| Vercel
 
-    System(notebase, "NoteBase", "Daily note-taking system with tag lens views. Allows notes written in a daily journal to be viewed as dedicated tag-filtered pages.")
-
-    System_Ext(cognito, "Amazon Cognito", "User authentication and identity management")
-    System_Ext(ses, "Amazon SES", "Transactional email — account verification, notifications")
-    System_Ext(s3, "Amazon S3", "File and attachment storage")
-    System_Ext(vercel, "Vercel", "Frontend hosting and CDN")
-
-    Rel(user, notebase, "Writes notes, views lenses", "HTTPS")
-    Rel(notebase, cognito, "Authenticates users via", "HTTPS")
-    Rel(notebase, ses, "Sends email via", "HTTPS")
-    Rel(notebase, s3, "Stores attachments via", "AWS SDK")
-    Rel(notebase, vercel, "Frontend served from", "HTTPS")
+    style User fill:#08427B,color:#fff,stroke:#052E56
+    style NoteBase fill:#1168BD,color:#fff,stroke:#0B4884
+    style Cognito fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style SES fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style S3 fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style Vercel fill:#6C6C6C,color:#fff,stroke:#3C3C3C
 ```
 
 ## Elements
