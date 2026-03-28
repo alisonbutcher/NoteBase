@@ -1,0 +1,113 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/NoteBase/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/NoteBase/",
+          "mainDocId": "README",
+          "docs": [
+            {
+              "id": "adr/ADR-001-event-sourcing",
+              "path": "/NoteBase/adr/ADR-001-event-sourcing",
+              "sidebar": "docs"
+            },
+            {
+              "id": "adr/ADR-002-nestjs-backend",
+              "path": "/NoteBase/adr/ADR-002-nestjs-backend",
+              "sidebar": "docs"
+            },
+            {
+              "id": "adr/ADR-003-postgres-event-store",
+              "path": "/NoteBase/adr/ADR-003-postgres-event-store",
+              "sidebar": "docs"
+            },
+            {
+              "id": "adr/ADR-004-dynamodb-read-store",
+              "path": "/NoteBase/adr/ADR-004-dynamodb-read-store",
+              "sidebar": "docs"
+            },
+            {
+              "id": "adr/ADR-005-rabbitmq-over-sqs",
+              "path": "/NoteBase/adr/ADR-005-rabbitmq-over-sqs",
+              "sidebar": "docs"
+            },
+            {
+              "id": "adr/ADR-006-interface-abstractions",
+              "path": "/NoteBase/adr/ADR-006-interface-abstractions",
+              "sidebar": "docs"
+            },
+            {
+              "id": "architecture/c4-components-api",
+              "path": "/NoteBase/architecture/c4-components-api",
+              "sidebar": "docs"
+            },
+            {
+              "id": "architecture/c4-containers",
+              "path": "/NoteBase/architecture/c4-containers",
+              "sidebar": "docs"
+            },
+            {
+              "id": "architecture/c4-context",
+              "path": "/NoteBase/architecture/c4-context",
+              "sidebar": "docs"
+            },
+            {
+              "id": "aws-deployment-topology",
+              "path": "/NoteBase/aws-deployment-topology",
+              "sidebar": "docs"
+            },
+            {
+              "id": "data-model",
+              "path": "/NoteBase/data-model",
+              "sidebar": "docs"
+            },
+            {
+              "id": "functional-requirements",
+              "path": "/NoteBase/functional-requirements",
+              "sidebar": "docs"
+            },
+            {
+              "id": "local-development",
+              "path": "/NoteBase/local-development",
+              "sidebar": "docs"
+            },
+            {
+              "id": "non-functional-requirements",
+              "path": "/NoteBase/non-functional-requirements",
+              "sidebar": "docs"
+            },
+            {
+              "id": "README",
+              "path": "/NoteBase/",
+              "sidebar": "docs"
+            },
+            {
+              "id": "security-architecture",
+              "path": "/NoteBase/security-architecture",
+              "sidebar": "docs"
+            },
+            {
+              "id": "sequences",
+              "path": "/NoteBase/sequences",
+              "sidebar": "docs"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "docs": {
+              "link": {
+                "path": "/NoteBase/",
+                "label": "Overview"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

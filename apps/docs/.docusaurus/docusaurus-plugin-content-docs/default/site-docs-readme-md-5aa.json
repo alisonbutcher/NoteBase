@@ -1,0 +1,19 @@
+{
+  "id": "README",
+  "title": "NoteBase — Architecture Documentation",
+  "description": "Overview",
+  "source": "@site/../../docs/README.md",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/NoteBase/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "next": {
+    "title": "Functional Requirements",
+    "permalink": "/NoteBase/functional-requirements"
+  }
+}

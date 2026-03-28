@@ -1,0 +1,83 @@
+{
+  "/NoteBase/-45c": {
+    "__comp": "5e95c892",
+    "__context": {
+      "plugin": "aba21aa0"
+    }
+  },
+  "/NoteBase/-084": {
+    "__comp": "a7bd4aaa",
+    "__props": "ebe61a8f"
+  },
+  "/NoteBase/-36b": {
+    "__comp": "a94703ab"
+  },
+  "/NoteBase/adr/ADR-001-event-sourcing-b7c": {
+    "__comp": "17896441",
+    "content": "8144e5f8"
+  },
+  "/NoteBase/adr/ADR-002-nestjs-backend-3b5": {
+    "__comp": "17896441",
+    "content": "08ada356"
+  },
+  "/NoteBase/adr/ADR-003-postgres-event-store-52e": {
+    "__comp": "17896441",
+    "content": "e02f05a6"
+  },
+  "/NoteBase/adr/ADR-004-dynamodb-read-store-f1a": {
+    "__comp": "17896441",
+    "content": "32569a90"
+  },
+  "/NoteBase/adr/ADR-005-rabbitmq-over-sqs-3d0": {
+    "__comp": "17896441",
+    "content": "129cb7db"
+  },
+  "/NoteBase/adr/ADR-006-interface-abstractions-cf0": {
+    "__comp": "17896441",
+    "content": "5866921e"
+  },
+  "/NoteBase/architecture/c4-components-api-d35": {
+    "__comp": "17896441",
+    "content": "fe225ee8"
+  },
+  "/NoteBase/architecture/c4-containers-a0c": {
+    "__comp": "17896441",
+    "content": "10e58e6b"
+  },
+  "/NoteBase/architecture/c4-context-87b": {
+    "__comp": "17896441",
+    "content": "cf696f5a"
+  },
+  "/NoteBase/aws-deployment-topology-c65": {
+    "__comp": "17896441",
+    "content": "e8c22127"
+  },
+  "/NoteBase/data-model-8f5": {
+    "__comp": "17896441",
+    "content": "56581b60"
+  },
+  "/NoteBase/functional-requirements-879": {
+    "__comp": "17896441",
+    "content": "ad39d938"
+  },
+  "/NoteBase/local-development-e4b": {
+    "__comp": "17896441",
+    "content": "b827a7f0"
+  },
+  "/NoteBase/non-functional-requirements-ba4": {
+    "__comp": "17896441",
+    "content": "79e34680"
+  },
+  "/NoteBase/security-architecture-8a7": {
+    "__comp": "17896441",
+    "content": "9a6f4969"
+  },
+  "/NoteBase/sequences-c47": {
+    "__comp": "17896441",
+    "content": "becb4906"
+  },
+  "/NoteBase/-3e1": {
+    "__comp": "17896441",
+    "content": "5aa63299"
+  }
+}

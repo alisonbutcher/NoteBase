@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-functional-requirements" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.7.0">
+<title data-rh="true">Functional Requirements | NoteBase</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://alisonbutcher.github.io/NoteBase/functional-requirements"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Functional Requirements | NoteBase"><meta data-rh="true" name="description" content="This document defines what NoteBase must do — the user-facing capabilities, scope boundaries per phase, and the core user journeys. Architecture decisions in the ADRs are traceable back to requirements stated here."><meta data-rh="true" property="og:description" content="This document defines what NoteBase must do — the user-facing capabilities, scope boundaries per phase, and the core user journeys. Architecture decisions in the ADRs are traceable back to requirements stated here."><link data-rh="true" rel="icon" href="/NoteBase/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://alisonbutcher.github.io/NoteBase/functional-requirements"><link data-rh="true" rel="alternate" href="https://alisonbutcher.github.io/NoteBase/functional-requirements" hreflang="en"><link data-rh="true" rel="alternate" href="https://alisonbutcher.github.io/NoteBase/functional-requirements" hreflang="x-default"><link rel="stylesheet" href="/NoteBase/assets/css/styles.666d4376.css">
+<script src="/NoteBase/assets/js/runtime~main.c250955d.js" defer="defer"></script>
+<script src="/NoteBase/assets/js/main.657a08dc.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const n=new URLSearchParams(window.location.search).entries();for(var[t,e]of n)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_vvmg" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/NoteBase/"><b class="navbar__title text--truncate">NoteBase</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/NoteBase/">Documentation</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/alisonbutcher/NoteBase" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_bu0x"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_HBeJ colorModeToggle_qujv"><button class="clean-btn toggleButton_vcyO toggleButtonDisabled_haoL" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite" aria-pressed="false"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_dWDt"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_yH8z"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_tKBI"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_pr3z"><div class="docsWrapper_Pw5n"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_ePcG" type="button"></button><div class="docRoot_xqr0"><aside class="theme-doc-sidebar-container docSidebarContainer_TFKG"><div class="sidebarViewport_NeDz"><div class="sidebar_lodC"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_QCqH"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/NoteBase/">Overview</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" href="/NoteBase/functional-requirements">Requirements</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/NoteBase/functional-requirements">Functional Requirements</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/non-functional-requirements">Non-Functional Requirements</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="true" href="/NoteBase/architecture/c4-context">Architecture</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/architecture/c4-context">C4 Level 1 — System Context</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/architecture/c4-containers">C4 Level 2 — Container Diagram</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/architecture/c4-components-api">C4 Level 3 — Component Diagram: API Service</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/aws-deployment-topology">AWS Deployment Topology</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/security-architecture">Security Architecture</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/sequences">Sequence Diagrams</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="true" href="/NoteBase/data-model">Data</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/data-model">Data Model</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="true" href="/NoteBase/adr/ADR-001-event-sourcing">Architecture Decision Records</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/adr/ADR-001-event-sourcing">ADR-001 — Event sourcing as the persistence strategy</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/adr/ADR-002-nestjs-backend">ADR-002 — NestJS as the backend framework</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/adr/ADR-003-postgres-event-store">ADR-003 — PostgreSQL as the event store</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/adr/ADR-004-dynamodb-read-store">ADR-004 — DynamoDB as the read store</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/adr/ADR-005-rabbitmq-over-sqs">ADR-005 — RabbitMQ on Amazon MQ over AWS SQS</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/adr/ADR-006-interface-abstractions">ADR-006 — Interface abstractions for phased deployment</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="true" href="/NoteBase/local-development">Development</a></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/NoteBase/local-development">Local Development</a></li></ul></li></ul></nav></div></div></aside><main class="docMainContainer_XUYE"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_nMEv"><div class="docItemContainer_fosX"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_gqGN" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/NoteBase/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_uWlZ"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Requirements</span><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Functional Requirements</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_IK8e theme-doc-toc-mobile tocMobile_V8LN"><button type="button" class="clean-btn tocCollapsibleButton_sem9">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Functional Requirements</h1></header>
+<p>This document defines what NoteBase must do — the user-facing capabilities, scope boundaries per phase, and the core user journeys. Architecture decisions in the ADRs are traceable back to requirements stated here.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_NJkZ" id="problem-statement">Problem Statement<a href="#problem-statement" class="hash-link" aria-label="Direct link to Problem Statement" title="Direct link to Problem Statement">​</a></h2>
+<p>Existing outliner and note-taking tools (Tana, Logseq, Obsidian, Capacities) support tagging nodes within daily notes, but cannot render all nodes sharing a tag as a coherent, editable page. The user must open each result individually. This breaks the workflow of anyone who writes meeting notes, project updates, or any recurring note type in a daily journal and wants to review or continue that work as a unified surface.</p>
+<p>NoteBase solves this with the <strong>tag lens</strong> — a virtual page that aggregates all nodes with a given tag, rendered as first-class editable entries, with writes going back to the source record. No data is duplicated. The lens is a view, not a copy.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_NJkZ" id="actors">Actors<a href="#actors" class="hash-link" aria-label="Direct link to Actors" title="Direct link to Actors">​</a></h2>
+<table><thead><tr><th>Actor</th><th>Description</th></tr></thead><tbody><tr><td><strong>User</strong></td><td>The primary actor. Writes daily notes, tags nodes, navigates tag lens pages, edits notes from any view. Phase 1: single user (the owner). Phase 2+: any authenticated SaaS user.</td></tr><tr><td><strong>System</strong></td><td>NoteBase itself — processes commands, maintains projections, serves read models.</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_NJkZ" id="functional-scope-by-phase">Functional Scope by Phase<a href="#functional-scope-by-phase" class="hash-link" aria-label="Direct link to Functional Scope by Phase" title="Direct link to Functional Scope by Phase">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="phase-1--personal-use">Phase 1   — Personal use<a href="#phase-1--personal-use" class="hash-link" aria-label="Direct link to Phase 1 — Personal use" title="Direct link to Phase 1 — Personal use">​</a></h3>
+<p><strong>In scope:</strong></p>
+<ul>
+<li>Daily note — create and edit a note for any date</li>
+<li>Nodes — write hierarchical bullet-point content within a daily note</li>
+<li>Tagging — apply one or more tags to a node using <code>#tag-name</code> syntax</li>
+<li>Tag lens — view all nodes with a given tag as a virtual page, ordered by date</li>
+<li>Inline editing — edit any node from the daily note view or the tag lens view; changes are reflected in both views</li>
+<li>Tag management — create, rename, and assign a colour to tags</li>
+<li>Node operations — indent, outdent, move, and soft-delete nodes</li>
+</ul>
+<p><strong>Out of scope in Phase 1:</strong></p>
+<ul>
+<li>User accounts and authentication (single-user, local only)</li>
+<li>File attachments</li>
+<li>Full-text search</li>
+<li>Real-time collaboration</li>
+<li>Mobile client</li>
+<li>Undo / redo (event log supports it but UI is not implemented)</li>
+<li>Public sharing of notes or lens pages</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="phase-2--early-saas">Phase 2 — Early SaaS<a href="#phase-2--early-saas" class="hash-link" aria-label="Direct link to Phase 2 — Early SaaS" title="Direct link to Phase 2 — Early SaaS">​</a></h3>
+<p>Adds to Phase 1:</p>
+<ul>
+<li>User registration and authentication via Amazon Cognito</li>
+<li>Full data isolation between users</li>
+<li>File attachments (images, PDFs) uploaded to S3 and embedded in nodes</li>
+<li>Full-text search across node content</li>
+<li>Account management (email change, password reset, account deletion with GDPR erasure)</li>
+</ul>
+<p><strong>Out of scope in Phase 2:</strong></p>
+<ul>
+<li>Real-time collaboration (multiple users editing simultaneously)</li>
+<li>Mobile native app</li>
+<li>Public/shared lens pages</li>
+<li>API access for third-party integrations</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="phase-3--growth">Phase 3 — Growth<a href="#phase-3--growth" class="hash-link" aria-label="Direct link to Phase 3 — Growth" title="Direct link to Phase 3 — Growth">​</a></h3>
+<p>Adds to Phase 2:</p>
+<ul>
+<li>Undo / redo (surfacing the event log to the user)</li>
+<li>Version history — view what a node looked like at any past date</li>
+<li>Mobile client (React Native or PWA)</li>
+<li>Shared lens pages (read-only public links)</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_NJkZ" id="use-cases">Use Cases<a href="#use-cases" class="hash-link" aria-label="Direct link to Use Cases" title="Direct link to Use Cases">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-01--write-a-daily-note">UC-01 — Write a daily note<a href="#uc-01--write-a-daily-note" class="hash-link" aria-label="Direct link to UC-01 — Write a daily note" title="Direct link to UC-01 — Write a daily note">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user opens today&#x27;s date and writes one or more nodes.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User navigates to the daily note for today (default landing page)</li>
+<li>System displays existing nodes for today, or an empty note if none exist</li>
+<li>User types content into a node</li>
+<li>User presses Enter to create the next sibling node, or Tab to indent (create a child)</li>
+<li>System persists a <code>NodeCreated</code> event for each new node</li>
+<li>System updates the daily note projection</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>The daily note date is determined by the user&#x27;s local timezone, not UTC</li>
+<li>Nodes are displayed in position order within their parent</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-02--tag-a-node">UC-02 — Tag a node<a href="#uc-02--tag-a-node" class="hash-link" aria-label="Direct link to UC-02 — Tag a node" title="Direct link to UC-02 — Tag a node">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user applies a tag to a node, making it visible through the corresponding tag lens.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User types <code>#tag-name</code> anywhere in a node&#x27;s content, or uses a tag picker UI</li>
+<li>System resolves the tag — creating a new <code>TagCreated</code> event if the tag does not yet exist</li>
+<li>System persists a <code>NodeTagged</code> event</li>
+<li>System updates the tag lens projection for <code>tag-name</code></li>
+<li>The node is now visible on the <code>#tag-name</code> lens page</li>
+</ol>
+<p><strong>Alternate flow — removing a tag:</strong></p>
+<ol>
+<li>User removes <code>#tag-name</code> from the node content, or uses the tag picker to deselect</li>
+<li>System persists a <code>NodeUntagged</code> event</li>
+<li>System removes the node from the tag lens projection for <code>tag-name</code></li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>A node can have multiple tags simultaneously</li>
+<li>Tags are case-insensitive and normalised on creation (<code>#Meeting</code> and <code>#meeting</code> are the same tag)</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-03--view-a-tag-lens-page">UC-03 — View a tag lens page<a href="#uc-03--view-a-tag-lens-page" class="hash-link" aria-label="Direct link to UC-03 — View a tag lens page" title="Direct link to UC-03 — View a tag lens page">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user navigates to a tag lens page to view all nodes with a given tag as a unified, editable surface.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User clicks a tag name or navigates to <code>/#tag-name</code></li>
+<li>System queries the tag lens projection for all nodes with that tag, ordered by <code>dailyNoteDate</code> descending</li>
+<li>System renders each node as a first-class entry showing:<!-- -->
+<ul>
+<li>Node content (editable)</li>
+<li>Date of the originating daily note (as a back-link)</li>
+<li>Child nodes (if any), indented beneath their parent</li>
+</ul>
+</li>
+<li>User reads and edits nodes directly on this page</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>The tag lens page is a <strong>view</strong>, not a copy. The nodes shown are the same records that exist in the daily notes.</li>
+<li>Edits made on the tag lens page are written back to the source record via a <code>NodeEdited</code> event. The daily note projection is updated accordingly.</li>
+<li>If the tag has no nodes, the page shows an empty state.</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-04--edit-a-node">UC-04 — Edit a node<a href="#uc-04--edit-a-node" class="hash-link" aria-label="Direct link to UC-04 — Edit a node" title="Direct link to UC-04 — Edit a node">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user edits the content of an existing node, from either the daily note view or the tag lens view.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User clicks into a node and modifies its content</li>
+<li>On blur (or after a debounce interval), system persists a <code>NodeEdited</code> event</li>
+<li>System updates all projections that include this node (daily note projection, and any tag lens projections for tags on this node)</li>
+<li>Both views reflect the updated content</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Edits are debounced on the client — a <code>NodeEdited</code> event is not written on every keystroke, but after a pause in typing (default: 1 second)</li>
+<li>The client optimistically updates the UI immediately. The event is persisted asynchronously.</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-05--move-a-node">UC-05 — Move a node<a href="#uc-05--move-a-node" class="hash-link" aria-label="Direct link to UC-05 — Move a node" title="Direct link to UC-05 — Move a node">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user reorders or re-parents a node using drag-and-drop or keyboard shortcuts.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User drags a node to a new position, or uses keyboard shortcut to move it</li>
+<li>System persists a <code>NodeMoved</code> event with <code>newParentId</code> and <code>newPosition</code></li>
+<li>System updates the daily note projection to reflect the new position</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Nodes can only be moved within the same daily note. Cross-date moves are out of scope for Phase 1.</li>
+<li>Moving a node does not affect which tag lens pages it appears on.</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-06--delete-a-node">UC-06 — Delete a node<a href="#uc-06--delete-a-node" class="hash-link" aria-label="Direct link to UC-06 — Delete a node" title="Direct link to UC-06 — Delete a node">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user deletes a node and its children.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User invokes delete on a node</li>
+<li>System persists a <code>NodeDeleted</code> event with <code>softDelete: true</code></li>
+<li>System removes the node (and its children) from all projections</li>
+<li>The node no longer appears in the daily note or any tag lens</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Soft delete is the default. The event remains in the event store — the node can be recovered by replaying events and ignoring the <code>NodeDeleted</code> event (undo, Phase 3).</li>
+<li>Hard delete (<code>softDelete: false</code>) purges the node from all projections permanently and cannot be undone. This is used for the GDPR erasure flow — not exposed as a regular user action.</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-07--manage-tags">UC-07 — Manage tags<a href="#uc-07--manage-tags" class="hash-link" aria-label="Direct link to UC-07 — Manage tags" title="Direct link to UC-07 — Manage tags">​</a></h3>
+<p><strong>Actor:</strong> User
+<strong>Description:</strong> The user creates, renames, or assigns a colour to a tag.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>User navigates to tag management</li>
+<li>User creates a new tag with a name and optional colour</li>
+<li>System persists a <code>TagCreated</code> event</li>
+<li>Tag is now available for use in nodes and visible in the sidebar</li>
+</ol>
+<p><strong>Alternate flows:</strong></p>
+<ul>
+<li>User renames a tag → <code>TagRenamed</code> event, all projections referencing the tag name are updated</li>
+<li>User assigns or changes a colour → <code>TagColourChanged</code> event, UI updates tag chip colour</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_NJkZ" id="uc-08--projection-rebuild-operator">UC-08 — Projection rebuild (operator)<a href="#uc-08--projection-rebuild-operator" class="hash-link" aria-label="Direct link to UC-08 — Projection rebuild (operator)" title="Direct link to UC-08 — Projection rebuild (operator)">​</a></h3>
+<p><strong>Actor:</strong> System operator
+<strong>Description:</strong> An operator triggers a rebuild of a stale or corrupted projection.</p>
+<p><strong>Basic flow:</strong></p>
+<ol>
+<li>Operator triggers rebuild via an admin endpoint or CLI command</li>
+<li>System loads the latest snapshot for the affected projection</li>
+<li>System replays all events with <code>id &gt; snapshot.last_event_id</code> from the event store</li>
+<li>System writes the rebuilt projection to the read store, overwriting stale data</li>
+<li>Operator receives a completion notification</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>The API continues serving the existing (potentially stale) projection during rebuild</li>
+<li>Rebuild time is bounded by the snapshot interval (default: 1,000 events)</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_NJkZ" id="key-business-rules">Key Business Rules<a href="#key-business-rules" class="hash-link" aria-label="Direct link to Key Business Rules" title="Direct link to Key Business Rules">​</a></h2>
+<table><thead><tr><th>Rule</th><th>Description</th></tr></thead><tbody><tr><td>BR-01</td><td>A node belongs to exactly one daily note. The <code>dailyNoteDate</code> is set on creation and never changes.</td></tr><tr><td>BR-02</td><td>A node can have zero or more tags. There is no limit on tags per node.</td></tr><tr><td>BR-03</td><td>Tags are unique per user by name (case-insensitive). Creating a tag with a duplicate name is idempotent.</td></tr><tr><td>BR-04</td><td>Deleting a tag does not delete the nodes that were tagged with it. Nodes retain their tag associations in the event log. Projections are updated to remove the deleted tag.</td></tr><tr><td>BR-05</td><td>Node content is stored as plain text in Phase 1. Rich text (bold, italic, inline code) is a Phase 2 concern.</td></tr><tr><td>BR-06</td><td>All user data is strictly isolated. A user cannot view, edit, or reference another user&#x27;s notes or tags.</td></tr><tr><td>BR-07</td><td>Events are immutable once written. No event is updated or deleted during normal operation.</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_NJkZ" id="requirements-traceability">Requirements Traceability<a href="#requirements-traceability" class="hash-link" aria-label="Direct link to Requirements Traceability" title="Direct link to Requirements Traceability">​</a></h2>
+<p>This table maps significant functional requirements to the architecture decisions they drove.</p>
+<table><thead><tr><th>Requirement</th><th>Architecture decision</th><th>ADR</th></tr></thead><tbody><tr><td>Multiple simultaneous views of the same node (daily note + tag lens) without duplication</td><td>Event sourcing — single source of truth, multiple projections derived from it</td><td>ADR-001</td></tr><tr><td>Tag lens must be pre-computed, not derived at query time</td><td>CQRS — read path hits a pre-computed projection, never the event store</td><td>ADR-001</td></tr><tr><td>Adding a new lens type (e.g. person lens) must not require data migration</td><td>Projection handlers consume the existing event stream — new handler, no migration</td><td>ADR-001</td></tr><tr><td>Undo history and version history (Phase 3)</td><td>Event log is the complete history — undo is replay without a specific event</td><td>ADR-001</td></tr><tr><td>Read latency must be low regardless of event log size</td><td>DynamoDB for read store — single-digit ms on fixed access patterns</td><td>ADR-004</td></tr><tr><td>Write path must not block on projection update</td><td>CQRS 202 Accepted — API returns before projection is updated</td><td>ADR-001</td></tr><tr><td>Phase 1 must run locally with no cloud infrastructure</td><td>Interface abstractions — NullPublisher + PostgresProjectionStore satisfy the same contracts</td><td>ADR-006</td></tr><tr><td>Phase 2 projection handler must be independently scalable</td><td>Decoupled via RabbitMQ — projection handler scales independently of the API</td><td>ADR-005</td></tr><tr><td>System must be portable off AWS</td><td>RabbitMQ on AMQP (open protocol) rather than SQS (proprietary)</td><td>ADR-005</td></tr><tr><td>User data deletion (GDPR)</td><td>Soft-delete projections + event pseudonymisation strategy (immutable log constraint)</td><td>NFR doc</td></tr></tbody></table></div></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/NoteBase/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Overview</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/NoteBase/non-functional-requirements"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Non-Functional Requirements</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_tF8M thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#problem-statement" class="table-of-contents__link toc-highlight">Problem Statement</a></li><li><a href="#actors" class="table-of-contents__link toc-highlight">Actors</a></li><li><a href="#functional-scope-by-phase" class="table-of-contents__link toc-highlight">Functional Scope by Phase</a><ul><li><a href="#phase-1--personal-use" class="table-of-contents__link toc-highlight">Phase 1 — Personal use</a></li><li><a href="#phase-2--early-saas" class="table-of-contents__link toc-highlight">Phase 2 — Early SaaS</a></li><li><a href="#phase-3--growth" class="table-of-contents__link toc-highlight">Phase 3 — Growth</a></li></ul></li><li><a href="#use-cases" class="table-of-contents__link toc-highlight">Use Cases</a><ul><li><a href="#uc-01--write-a-daily-note" class="table-of-contents__link toc-highlight">UC-01 — Write a daily note</a></li><li><a href="#uc-02--tag-a-node" class="table-of-contents__link toc-highlight">UC-02 — Tag a node</a></li><li><a href="#uc-03--view-a-tag-lens-page" class="table-of-contents__link toc-highlight">UC-03 — View a tag lens page</a></li><li><a href="#uc-04--edit-a-node" class="table-of-contents__link toc-highlight">UC-04 — Edit a node</a></li><li><a href="#uc-05--move-a-node" class="table-of-contents__link toc-highlight">UC-05 — Move a node</a></li><li><a href="#uc-06--delete-a-node" class="table-of-contents__link toc-highlight">UC-06 — Delete a node</a></li><li><a href="#uc-07--manage-tags" class="table-of-contents__link toc-highlight">UC-07 — Manage tags</a></li><li><a href="#uc-08--projection-rebuild-operator" class="table-of-contents__link toc-highlight">UC-08 — Projection rebuild (operator)</a></li></ul></li><li><a href="#key-business-rules" class="table-of-contents__link toc-highlight">Key Business Rules</a></li><li><a href="#requirements-traceability" class="table-of-contents__link toc-highlight">Requirements Traceability</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">NoteBase Architecture Documentation</div></div></div></footer></div>
+</body>
+</html>
