@@ -180,7 +180,7 @@ The data subnet has **no route to the internet** — not even via NAT Gateway. T
 | Frontend | Vercel | Managed | Yes (Vercel CDN) |
 | API | ECS Fargate | 0.5 vCPU / 1GB RAM, min 1 task | Yes (tasks spread across AZs) |
 | Projection handler | ECS Fargate | 0.25 vCPU / 512MB RAM, min 1 task | Yes |
-| Event store | RDS Postgres 16 | db.t3.small, 20GB gp3, Multi-AZ | Yes |
+| Event store | RDS Postgres 18 | db.t3.small, 20GB gp3, Multi-AZ | Yes |
 | Read store | DynamoDB | On-demand capacity | Yes (AWS managed) |
 | Message queue | Amazon MQ | mq.t3.micro, single-instance | Phase 2: single, Phase 3: active/standby |
 | File storage | S3 | Standard storage class | Yes (AWS managed) |

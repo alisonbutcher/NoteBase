@@ -2,7 +2,9 @@
 
 This document describes the local development setup for NoteBase using Docker Compose.
 
-In Phase 1 (local), the full AWS infrastructure is replaced by local equivalents:
+In Phase 1 (local), the full AWS infrastructure is replaced by local equivalents.
+
+Where available, services use [Docker Hardened Images](https://dhi.io) (`dhi.io/...`) — zero/near-zero known CVEs, signed provenance, and SBOM/VEX metadata. Requires a free Docker account: `docker login dhi.io`. DynamoDB Local and LocalStack are vendor images with no hardened equivalent.
 
 | AWS Service | Local Equivalent |
 |---|---|
@@ -22,11 +24,11 @@ version: '3.9'
 services:
 
   postgres:
-    image: postgres:16-alpine
+    image: dhi.io/postgres:18-alpine3.22
     environment:
-      POSTGRES_DB: notebase
-      POSTGRES_USER: notebase
-      POSTGRES_PASSWORD: notebase
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - '5432:5432'
     volumes:
@@ -34,10 +36,10 @@ services:
       - ./infrastructure/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   rabbitmq:
-    image: rabbitmq:3.13-management-alpine
+    image: dhi.io/rabbitmq:4.2-debian13
     environment:
-      RABBITMQ_DEFAULT_USER: notebase
-      RABBITMQ_DEFAULT_PASS: notebase
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - '5672:5672'    # AMQP
       - '15672:15672'  # management UI
@@ -114,7 +116,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ## Starting Local Development
 
 ```bash
-# start all infrastructure services
+# start all infrastructure services (requires docker login dhi.io — see above)
 docker compose up -d
 
 # install dependencies (from monorepo root)
