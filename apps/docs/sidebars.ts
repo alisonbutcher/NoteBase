@@ -18,6 +18,14 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'API',
+      collapsed: false,
+      items: [
+        'api-specification',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Architecture',
       collapsed: false,
       items: [
@@ -56,6 +64,15 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         'local-development',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Reference',
+      collapsed: false,
+      items: [
+        'risk-register',
+        'glossary',
       ],
     },
   ],

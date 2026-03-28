@@ -48,6 +48,12 @@ Existing outliner tools (Tana, Logseq, Obsidian, Capacities) share a common limi
 | [Functional Requirements](functional-requirements.md) | Use cases, business rules, and a traceability matrix linking requirements to architecture decisions |
 | [Non-Functional Requirements](non-functional-requirements.md) | Availability targets, latency SLOs, RPO/RTO, scalability, security, and observability requirements |
 
+### API
+
+| Document | Description |
+|---|---|
+| [API Specification](api-specification.md) | REST endpoints for all commands and queries, request/response shapes, and conventions |
+
 ### Architecture
 
 | Document | Description |
@@ -81,6 +87,13 @@ Existing outliner tools (Tana, Logseq, Obsidian, Capacities) share a common limi
 | Document | Description |
 |---|---|
 | [Local Development](local-development.md) | Docker Compose setup, environment variables, and how to switch between Phase 1 and Phase 2 |
+
+### Reference
+
+| Document | Description |
+|---|---|
+| [Risk Register](risk-register.md) | Architectural risks with likelihood, impact, mitigation strategies, and monitoring triggers |
+| [Glossary](glossary.md) | Definitions for domain and architecture terms used throughout the documentation |
 
 ---
 
