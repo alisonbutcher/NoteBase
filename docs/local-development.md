@@ -22,7 +22,7 @@ version: '3.9'
 services:
 
   postgres:
-    image: postgres:16-alpine
+    image: dhi.io/postgres:16-debian13
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -34,7 +34,7 @@ services:
       - ./infrastructure/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   rabbitmq:
-    image: rabbitmq:3.13-management-alpine
+    image: dhi.io/rabbitmq:4.2-debian13
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
@@ -114,6 +114,9 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ## Starting Local Development
 
 ```bash
+# authenticate with the Docker Hardened Images registry (once per machine)
+docker login dhi.io
+
 # start all infrastructure services
 docker compose up -d
 
