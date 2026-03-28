@@ -3,42 +3,42 @@
 Shows the technical building blocks inside NoteBase and how they communicate.
 
 ```mermaid
-C4Container
-    title Container Diagram for NoteBase
+graph TD
+    User(["User"])
+    Cognito["Amazon Cognito\nAuthentication"]
 
-    Person(user, "User", "Writes notes, views tag lenses")
+    subgraph NoteBase ["NoteBase System Boundary"]
+        Web["Web Frontend\nNext.js · TypeScript · Vercel"]
+        API["API Service\nNestJS · TypeScript · ECS Fargate"]
+        PH["Projection Handler\nNestJS Microservice · ECS Fargate"]
+        MQ["Message Queue\nRabbitMQ · Amazon MQ"]
+        FS["File Storage\nAWS S3"]
+        ES[("Event Store\nPostgreSQL · AWS RDS")]
+        RS[("Read Store\nDynamoDB")]
+        SS[("Snapshot Store\nPostgreSQL · AWS RDS")]
+    end
 
-    System_Boundary(notebase, "NoteBase") {
+    User -->|HTTPS| Web
+    Web -->|REST / HTTPS| API
+    API -->|HTTPS| Cognito
+    API -->|TCP / SQL| ES
+    API -->|AMQP| MQ
+    API -->|AWS SDK| RS
+    API -->|AWS SDK| FS
+    MQ -->|AMQP| PH
+    PH -->|AWS SDK| RS
+    PH -->|TCP / SQL| SS
 
-        Container(web, "Web Frontend", "Next.js, TypeScript", "Renders daily notes and tag lens pages. TipTap editor for note authoring.")
-
-        Container(api, "API Service", "NestJS, TypeScript, ECS Fargate", "Handles all commands and queries. Implements CQRS pattern with explicit command and query handlers.")
-
-        Container(projection_handler, "Projection Handler", "NestJS Microservice, TypeScript, ECS Fargate", "Consumes events from the queue and updates read store projections. Runs as a persistent RabbitMQ consumer.")
-
-        ContainerDb(event_store, "Event Store", "PostgreSQL, AWS RDS", "Append-only log of all domain events. Source of truth for the entire system. Never updated or deleted from.")
-
-        ContainerDb(read_store, "Read Store", "DynamoDB", "Pre-computed projections optimised for read access. Tag lens projection and daily note projection. Rebuilt from event log at any time.")
-
-        ContainerDb(snapshot_store, "Snapshot Store", "PostgreSQL, AWS RDS", "Periodic snapshots of projection state. Bounds event replay time during projection rebuild.")
-
-        Container(queue, "Message Queue", "RabbitMQ, Amazon MQ", "Decouples the API write path from projection handlers. Guarantees delivery via AMQP acknowledgement model. Dead letter queue for failed messages.")
-
-        Container(file_store, "File Storage", "AWS S3", "Stores note attachments and uploaded files.")
-    }
-
-    System_Ext(cognito, "Amazon Cognito", "Authentication")
-
-    Rel(user, web, "Uses", "HTTPS")
-    Rel(web, api, "Sends commands and queries", "REST / HTTPS")
-    Rel(api, cognito, "Validates JWT tokens via", "HTTPS")
-    Rel(api, event_store, "Appends domain events", "TCP / SQL")
-    Rel(api, queue, "Publishes events after persistence", "AMQP")
-    Rel(api, read_store, "Queries projections", "AWS SDK")
-    Rel(api, file_store, "Generates presigned upload URLs", "AWS SDK")
-    Rel(queue, projection_handler, "Delivers events to", "AMQP")
-    Rel(projection_handler, read_store, "Writes updated projections", "AWS SDK")
-    Rel(projection_handler, snapshot_store, "Writes periodic snapshots", "TCP / SQL")
+    style User fill:#08427B,color:#fff,stroke:#052E56
+    style Web fill:#1168BD,color:#fff,stroke:#0B4884
+    style API fill:#1168BD,color:#fff,stroke:#0B4884
+    style PH fill:#1168BD,color:#fff,stroke:#0B4884
+    style MQ fill:#1168BD,color:#fff,stroke:#0B4884
+    style FS fill:#1168BD,color:#fff,stroke:#0B4884
+    style ES fill:#1168BD,color:#fff,stroke:#0B4884
+    style RS fill:#1168BD,color:#fff,stroke:#0B4884
+    style SS fill:#1168BD,color:#fff,stroke:#0B4884
+    style Cognito fill:#6C6C6C,color:#fff,stroke:#3C3C3C
 ```
 
 ## Phase 1 Substitutions
