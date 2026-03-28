@@ -4,7 +4,7 @@ This document describes the local development setup for NoteBase using Docker Co
 
 In Phase 1 (local), the full AWS infrastructure is replaced by local equivalents.
 
-Where available, services use [Docker Hardened Images](https://dhi.io) (`dhi.io/...`) — zero known CVEs, signed provenance, SBOM/VEX metadata, and CIS/FIPS/STIG compliant. Requires a free Docker login: `docker login dhi.io`. DynamoDB Local and LocalStack are vendor images with no hardened equivalent.
+Where available, services use [Docker Hardened Images](https://dhi.io) (`dhi.io/...`) — zero/near-zero known CVEs, signed provenance, and SBOM/VEX metadata. Requires a free Docker account: `docker login dhi.io`. DynamoDB Local and LocalStack are vendor images with no hardened equivalent.
 
 | AWS Service | Local Equivalent |
 |---|---|
@@ -24,7 +24,7 @@ version: '3.9'
 services:
 
   postgres:
-    image: dhi.io/postgres:18-alpine3.22-dev
+    image: dhi.io/postgres:18-alpine3.22
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}

@@ -3,7 +3,7 @@ version: '3.9'
 services:
 
   postgres:
-    image: dhi.io/postgres:18-alpine3.22-dev
+    image: dhi.io/postgres:18-alpine3.22
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -20,7 +20,7 @@ services:
       retries: 5
 
   rabbitmq:
-    image: dhi.io/rabbitmq:4.2-debian13
+    image: dhi.io/rabbitmq:4.2
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
