@@ -22,7 +22,7 @@ version: '3.9'
 services:
 
   postgres:
-    image: dhi.io/postgres:16-debian13
+    image: dhi.io/postgres:18-alpine3.22-dev
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
