@@ -1,0 +1,23 @@
+{
+  "id": "architecture/c4-components-api",
+  "title": "C4 Level 3 — Component Diagram: API Service",
+  "description": "Shows the internal components of the NestJS API service container.",
+  "source": "@site/../../docs/architecture/c4-components-api.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/c4-components-api",
+  "permalink": "/NoteBase/architecture/c4-components-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "C4 Level 2 — Container Diagram",
+    "permalink": "/NoteBase/architecture/c4-containers"
+  },
+  "next": {
+    "title": "AWS Deployment Topology",
+    "permalink": "/NoteBase/aws-deployment-topology"
+  }
+}
