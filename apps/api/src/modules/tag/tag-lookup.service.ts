@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 
@@ -14,13 +14,17 @@ export interface ResolvedTag {
  * TagCreated when isNew=true.
  */
 @Injectable()
-export class TagLookupService {
+export class TagLookupService implements OnApplicationShutdown {
   private readonly pool: Pool;
 
   constructor(config: ConfigService) {
     this.pool = new Pool({
       connectionString: config.getOrThrow<string>('app.database.url'),
     });
+  }
+
+  async onApplicationShutdown(): Promise<void> {
+    await this.pool.end();
   }
 
   async findByName(userId: string, tagName: string): Promise<{ tagId: string } | null> {
