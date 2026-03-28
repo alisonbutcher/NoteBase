@@ -20,7 +20,7 @@ C4Component
 
         Component(event_store_writer, "Event Store Writer", "TypeScript, IEventStore", "Appends events to the Postgres event store. Implements IEventStore interface — swappable per ADR-006.")
 
-        Component(message_publisher, "Message Publisher", "TypeScript, IMessagePublisher", "Publishes events to the message queue after persistence. Implements IMessagePublisher interface. Phase 1: Postgres NOTIFY. Phase 2: RabbitMQ AMQP.")
+        Component(message_publisher, "Message Publisher", "TypeScript, IMessagePublisher", "Publishes events to the message queue after persistence. Implements IMessagePublisher interface. Phase 1: NullPublisher (no-op, handler polls directly). Phase 2: RabbitMQ AMQP.")
 
         Component(projection_reader, "Projection Reader", "TypeScript, IProjectionStore", "Reads pre-computed projections from the read store. Implements IProjectionStore interface. Phase 1: Postgres tables. Phase 2: DynamoDB.")
     }

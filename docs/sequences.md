@@ -8,29 +8,25 @@ This document describes the key runtime flows in NoteBase — the write path and
 
 This sequence shows what happens when a user tags a note with `#meeting`.
 
-```
-Client          API             Event Store     Message Bus     Projection      Read Store
-  |               |                 |               |           Handler            |
-  |─POST /nodes/tag──────────────►  |               |               |              |
-  |               |                 |               |               |              |
-  |               │ validate command|               |               |              |
-  |               │ build event     |               |               |              |
-  |               |                 |               |               |              |
-  |               |──INSERT event──►|               |               |              |
-  |               |                 |               |               |              |
-  |               |──publish──────────────────────►|               |              |
-  |               |                 |               |               |              |
-  |◄──202 Accepted────────────────  |               |               |              |
-  |               |                 |               |  message delivered            |
-  |               |                 |               |───────────────►|              |
-  |               |                 |               |               |              |
-  |               |                 |               |               │ handle event  |
-  |               |                 |               |               │ update state  |
-  |               |                 |               |               |              |
-  |               |                 |               |               |──upsert node─►|
-  |               |                 |               |               |              |
-  |               |                 |               |               |◄─ack──────── |
-  |               |                 |               |◄──ack─────────|              |
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant ES as Event Store
+    participant MB as Message Bus
+    participant PH as Projection Handler
+    participant RS as Read Store
+
+    C->>A: POST /nodes/:id/tags
+    A->>A: validate command, build event
+    A->>ES: INSERT event
+    A->>MB: publish event
+    A-->>C: 202 Accepted
+    MB->>PH: deliver message
+    PH->>PH: handle event, update state
+    PH->>RS: upsert node
+    RS-->>PH: ack
+    PH-->>MB: ack
 ```
 
 ### Key points
@@ -49,20 +45,18 @@ Client          API             Event Store     Message Bus     Projection      
 
 This sequence shows what happens when a user navigates to the `#meeting` tag lens page.
 
-```
-Client          API             Read Store      Event Store
-  |               |                 |               |
-  |─GET /lens/meeting────────────►  |               |
-  |               |                 |               |
-  |               |──SELECT nodes──►|               |
-  |               |  WHERE tag=meeting              |
-  |               |  AND user=current               |
-  |               |                 |               |
-  |               |◄──rows──────────|               |
-  |               |                 |               |
-  |◄──200 node list───────────────  |               |
-  |               |                 |               |
-  |               |                 |      (event store not touched)
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant RS as Read Store
+    participant ES as Event Store
+
+    C->>A: GET /lens/:tagId
+    A->>RS: SELECT nodes WHERE tag=meeting AND user=current
+    RS-->>A: rows
+    A-->>C: 200 node list
+    Note over ES: Event store not touched
 ```
 
 ### Key points
@@ -79,27 +73,23 @@ Client          API             Read Store      Event Store
 
 This sequence shows how to rebuild a corrupted or stale projection from the event log.
 
-```
-Operator        Projection      Snapshot        Event Store     Read Store
-  |             Handler          Store               |               |
-  |─trigger rebuild────────────►|               |               |
-  |             |               |               |               |
-  |             |──get latest──►|               |               |
-  |             |   snapshot    |               |               |
-  |             |◄──snapshot────|               |               |
-  |             |               |               |               |
-  |             |──replay from last_event_id────►|               |
-  |             |               |               |               |
-  |             |◄──event stream─────────────── |               |
-  |             |               |               |               |
-  |             │ process each event            |               |
-  |             │ apply to state                |               |
-  |             |               |               |               |
-  |             |──write rebuilt projection───────────────────► |
-  |             |               |               |               |
-  |             |──write new────►               |               |
-  |             |   snapshot    |               |               |
-  |◄──complete──|               |               |               |
+```mermaid
+sequenceDiagram
+    participant O as Operator
+    participant PH as Projection Handler
+    participant SS as Snapshot Store
+    participant ES as Event Store
+    participant RS as Read Store
+
+    O->>PH: trigger rebuild
+    PH->>SS: get latest snapshot
+    SS-->>PH: snapshot
+    PH->>ES: replay from last_event_id
+    ES-->>PH: event stream
+    PH->>PH: process each event, apply to state
+    PH->>RS: write rebuilt projection
+    PH->>SS: write new snapshot
+    PH-->>O: complete
 ```
 
 ### Key points
