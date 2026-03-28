@@ -19,20 +19,20 @@ NoteBase delegates all identity management to **Amazon Cognito**. The API does n
 
 ### Authentication flow
 
-```
-User                  Frontend             Cognito              API
- |                       |                    |                   |
- |── enter credentials ─►|                    |                   |
- |                       |── POST /oauth/token►|                   |
- |                       |                    |                   |
- |                       |◄── JWT (id + access + refresh tokens) ─|
- |                       |                    |                   |
- |                       |── API request with Bearer token ──────►|
- |                       |                    |                   |
- |                       |                    |◄── validate JWT ──|
- |                       |                    |── valid / invalid ►|
- |                       |                    |                   |
- |                       |◄──────────────── response ────────────|
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant C as Cognito
+    participant A as API
+
+    U->>F: enter credentials
+    F->>C: POST /oauth/token
+    C-->>F: JWT (id + access + refresh tokens)
+    F->>A: API request with Bearer token
+    A->>C: validate JWT via JWKS endpoint
+    C-->>A: valid / invalid
+    A-->>F: response
 ```
 
 ### Token handling
