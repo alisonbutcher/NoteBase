@@ -1,0 +1,10 @@
+{
+  "name": "@notebase/api",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "echo \"api: not yet scaffolded\"",
+    "dev": "echo \"api: not yet scaffolded\"",
+    "lint": "echo \"api: not yet scaffolded\""
+  }
+}
