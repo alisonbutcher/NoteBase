@@ -1,0 +1,13 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testRegex": "test/.*\\.e2e-spec\\.ts$",
+  "testSequencer": "./test/e2e-sequencer.js",
+  "transform": { "^.+\\.(t|j)s$": "ts-jest" },
+  "collectCoverageFrom": ["src/**/*.(t|j)s"],
+  "coverageDirectory": "./coverage-e2e",
+  "testEnvironment": "node",
+  "moduleNameMapper": {
+    "^@notebase/shared$": "<rootDir>/../../packages/shared/src"
+  }
+}

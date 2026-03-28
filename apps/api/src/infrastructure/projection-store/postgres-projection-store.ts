@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import type {
@@ -12,13 +12,17 @@ import type {
 } from '@notebase/shared';
 
 @Injectable()
-export class PostgresProjectionStore implements IProjectionStore {
+export class PostgresProjectionStore implements IProjectionStore, OnApplicationShutdown {
   private readonly pool: Pool;
 
   constructor(private readonly config: ConfigService) {
     this.pool = new Pool({
       connectionString: config.getOrThrow<string>('app.database.url'),
     });
+  }
+
+  async onApplicationShutdown(): Promise<void> {
+    await this.pool.end();
   }
 
   async upsertDailyNoteNode(
@@ -194,29 +198,28 @@ export class PostgresProjectionStore implements IProjectionStore {
 
   async upsertTag(userId: string, tag: TagRecord): Promise<void> {
     await this.pool.query(
-      `INSERT INTO tags (user_id, tag_id, tag_name, color, created_at)
+      `INSERT INTO tags (id, user_id, name, color, created_at)
        VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (user_id, tag_id) DO UPDATE SET
-         tag_name   = EXCLUDED.tag_name,
-         color      = EXCLUDED.color`,
-      [userId, tag.tagId, tag.tagName, tag.color, tag.createdAt],
+       ON CONFLICT (user_id, name) DO UPDATE SET
+         color = EXCLUDED.color`,
+      [tag.tagId, userId, tag.tagName, tag.color, tag.createdAt],
     );
   }
 
   async getTags(userId: string): Promise<TagRecord[]> {
     const result = await this.pool.query<{
-      tag_id: string;
-      tag_name: string;
+      id: string;
+      name: string;
       color: string | null;
       created_at: string;
     }>(
-      `SELECT tag_id, tag_name, color, created_at FROM tags WHERE user_id = $1 ORDER BY tag_name ASC`,
+      `SELECT id, name, color, created_at FROM tags WHERE user_id = $1 ORDER BY name ASC`,
       [userId],
     );
 
     return result.rows.map((row) => ({
-      tagId: row.tag_id,
-      tagName: row.tag_name,
+      tagId: row.id,
+      tagName: row.name,
       color: row.color,
       createdAt: row.created_at,
     }));
