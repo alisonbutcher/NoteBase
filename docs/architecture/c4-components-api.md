@@ -2,61 +2,78 @@
 
 Shows the internal components of the NestJS API service container.
 
+### API Service
+
 ```mermaid
-C4Component
-    title Component Diagram for NoteBase API Service
+graph TD
+    User(["User\nvia web frontend"])
+    ES[("Event Store\nPostgreSQL")]
+    MQ["Message Queue\nRabbitMQ"]
+    RS[("Read Store\nDynamoDB")]
 
-    Person(user, "User", "Via web frontend")
+    subgraph API ["API Service — NestJS on ECS Fargate"]
+        MW["Middleware Pipeline\nNestJS · JWT Guard\nAuth validation · rate limiting · routing"]
+        CH["Command Handlers\nNestJS CQRS\nCreateNode · EditNode · TagNode · MoveNode · DeleteNode"]
+        QH["Query Handlers\nNestJS CQRS\nGetTagLens · GetDailyNote · GetNodeChildren"]
+        EF["Event Factory\nTypeScript\nConstructs typed immutable domain events"]
+        ESW["Event Store Writer\nIEventStore\nAppends events to Postgres"]
+        MP["Message Publisher\nIMessagePublisher\nPhase 1: NullPublisher · Phase 2: RabbitMQ"]
+        PR["Projection Reader\nIProjectionStore\nPhase 1: Postgres · Phase 2: DynamoDB"]
+    end
 
-    Container_Boundary(api, "API Service — NestJS on ECS Fargate") {
+    User -->|REST| MW
+    MW --> CH
+    MW --> QH
+    CH --> EF
+    EF --> ESW
+    ESW -->|INSERT SQL| ES
+    ESW --> MP
+    MP -->|AMQP| MQ
+    QH --> PR
+    PR -->|AWS SDK| RS
 
-        Component(middleware, "Middleware Pipeline", "NestJS, JWT Guard", "Handles auth validation, rate limiting, and request routing. Validates Cognito JWTs on all protected routes.")
+    style User fill:#08427B,color:#fff,stroke:#052E56
+    style MW fill:#1168BD,color:#fff,stroke:#0B4884
+    style CH fill:#1168BD,color:#fff,stroke:#0B4884
+    style QH fill:#1168BD,color:#fff,stroke:#0B4884
+    style EF fill:#1168BD,color:#fff,stroke:#0B4884
+    style ESW fill:#1168BD,color:#fff,stroke:#0B4884
+    style MP fill:#1168BD,color:#fff,stroke:#0B4884
+    style PR fill:#1168BD,color:#fff,stroke:#0B4884
+    style ES fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style MQ fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style RS fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+```
 
-        Component(command_handlers, "Command Handlers", "NestJS CQRS, TypeScript", "Handles all write operations. One handler per command type: CreateNodeHandler, EditNodeHandler, TagNodeHandler, MoveNodeHandler, DeleteNodeHandler.")
+### Projection Handler Service
 
-        Component(query_handlers, "Query Handlers", "NestJS CQRS, TypeScript", "Handles all read operations. One handler per query type: GetTagLensHandler, GetDailyNoteHandler, GetNodeChildrenHandler.")
+```mermaid
+graph TD
+    MQ["Message Queue\nRabbitMQ"]
+    RS[("Read Store\nDynamoDB")]
+    SS[("Snapshot Store\nPostgreSQL")]
 
-        Component(event_factory, "Event Factory", "TypeScript", "Constructs typed, immutable domain event objects from validated commands. Assigns eventId, userId, and occurredAt.")
+    subgraph PH ["Projection Handler Service — NestJS Microservice"]
+        QC["Queue Consumer\nNestJS Microservices · AMQP\nRoutes events by type"]
+        TLH["Tag Lens Handler\nTypeScript\nProcesses NodeCreated · NodeTagged · NodeUntagged · NodeEdited · NodeDeleted"]
+        DNH["Daily Note Handler\nTypeScript\nProcesses NodeCreated · NodeEdited · NodeMoved · NodeDeleted"]
+        SM["Snapshot Manager\nTypeScript\nPeriodic state snapshots · bounds replay time"]
+    end
 
-        Component(event_store_writer, "Event Store Writer", "TypeScript, IEventStore", "Appends events to the Postgres event store. Implements IEventStore interface — swappable per ADR-006.")
+    MQ -->|AMQP| QC
+    QC --> TLH
+    QC --> DNH
+    TLH -->|Upsert AWS SDK| RS
+    DNH -->|Upsert AWS SDK| RS
+    SM -->|Write SQL| SS
 
-        Component(message_publisher, "Message Publisher", "TypeScript, IMessagePublisher", "Publishes events to the message queue after persistence. Implements IMessagePublisher interface. Phase 1: NullPublisher (no-op, handler polls directly). Phase 2: RabbitMQ AMQP.")
-
-        Component(projection_reader, "Projection Reader", "TypeScript, IProjectionStore", "Reads pre-computed projections from the read store. Implements IProjectionStore interface. Phase 1: Postgres tables. Phase 2: DynamoDB.")
-    }
-
-    Container_Boundary(projection_svc, "Projection Handler Service — NestJS Microservice") {
-
-        Component(queue_consumer, "Queue Consumer", "NestJS Microservices, AMQP", "Persistent RabbitMQ consumer. Routes incoming events to the correct projection handler by event type.")
-
-        Component(tag_lens_handler, "Tag Lens Handler", "TypeScript", "Processes NodeCreated, NodeTagged, NodeUntagged, NodeEdited, NodeDeleted events. Maintains the tag lens projection in the read store.")
-
-        Component(daily_note_handler, "Daily Note Handler", "TypeScript", "Processes NodeCreated, NodeEdited, NodeMoved, NodeDeleted events. Maintains the daily note projection in the read store.")
-
-        Component(snapshot_manager, "Snapshot Manager", "TypeScript", "Monitors event gap since last snapshot. Triggers snapshot writes when gap exceeds threshold. Manages snapshot lifecycle.")
-    }
-
-    ContainerDb(event_store, "Event Store", "PostgreSQL")
-    ContainerDb(read_store, "Read Store", "DynamoDB")
-    ContainerDb(snapshot_store, "Snapshot Store", "PostgreSQL")
-    Container(queue, "Message Queue", "RabbitMQ")
-
-    Rel(user, middleware, "HTTP requests", "REST")
-    Rel(middleware, command_handlers, "Validated write requests")
-    Rel(middleware, query_handlers, "Validated read requests")
-    Rel(command_handlers, event_factory, "Creates events from commands")
-    Rel(event_factory, event_store_writer, "Passes typed events")
-    Rel(event_store_writer, event_store, "INSERT", "SQL")
-    Rel(event_store_writer, message_publisher, "Triggers publish after persist")
-    Rel(message_publisher, queue, "Publishes events", "AMQP")
-    Rel(query_handlers, projection_reader, "Reads projections")
-    Rel(projection_reader, read_store, "Query", "AWS SDK")
-    Rel(queue, queue_consumer, "Delivers events", "AMQP")
-    Rel(queue_consumer, tag_lens_handler, "Routes tagged events")
-    Rel(queue_consumer, daily_note_handler, "Routes node events")
-    Rel(tag_lens_handler, read_store, "Upserts projection", "AWS SDK")
-    Rel(daily_note_handler, read_store, "Upserts projection", "AWS SDK")
-    Rel(snapshot_manager, snapshot_store, "Writes snapshots", "SQL")
+    style QC fill:#1168BD,color:#fff,stroke:#0B4884
+    style TLH fill:#1168BD,color:#fff,stroke:#0B4884
+    style DNH fill:#1168BD,color:#fff,stroke:#0B4884
+    style SM fill:#1168BD,color:#fff,stroke:#0B4884
+    style MQ fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style RS fill:#6C6C6C,color:#fff,stroke:#3C3C3C
+    style SS fill:#6C6C6C,color:#fff,stroke:#3C3C3C
 ```
 
 ## Component Responsibilities

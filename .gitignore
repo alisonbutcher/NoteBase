@@ -4,6 +4,7 @@ dist/
 build/
 .next/
 .turbo/
+.docusaurus/
 *.local
 .env
 .env.*
