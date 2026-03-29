@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface NodeEditorProps {
   content: string;
@@ -22,9 +22,13 @@ export function NodeEditor({
   onEnter,
   onDelete,
 }: NodeEditorProps) {
+  const [mounted, setMounted] = useState(false);
   const savedContent = useRef(content);
 
+  useEffect(() => setMounted(true), []);
+
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         // Disable block-level features we don't need per-node
@@ -81,6 +85,14 @@ export function NodeEditor({
       savedContent.current = content;
     }
   }, [content, editor]);
+
+  if (!mounted) {
+    return (
+      <div className="flex-1 min-w-0 text-sm" style={{ color: 'var(--text)', minHeight: '1.5em' }}>
+        {content || <span style={{ color: 'var(--text-subtle)' }}>{placeholder}</span>}
+      </div>
+    );
+  }
 
   return <EditorContent editor={editor} className="flex-1 min-w-0" />;
 }
