@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+
+:root {
+  --bg:           #ffffff;
+  --bg-raised:    #f7f7f8;
+  --bg-hover:     #ededef;
+  --bg-active:    #e4e4e8;
+  --border:       rgba(0, 0, 0, 0.08);
+  --border-focus: rgba(99, 85, 232, 0.5);
+  --text:         #111114;
+  --text-muted:   #6b6b78;
+  --text-subtle:  #9b9ba8;
+  --accent:       #6355e8;
+  --accent-hover: #7c6af5;
+  --accent-text:  #ffffff;
+  --tag-bg:       rgba(99, 85, 232, 0.1);
+  --tag-text:     #6355e8;
+  --sidebar-width: 240px;
+  --radius:       8px;
+}
+
+.dark {
+  --bg:           #0a0a0b;
+  --bg-raised:    #111114;
+  --bg-hover:     #1a1a1f;
+  --bg-active:    #22222a;
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-focus: rgba(124, 106, 245, 0.5);
+  --text:         #f0f0f4;
+  --text-muted:   #8b8b98;
+  --text-subtle:  #5a5a68;
+  --accent:       #7c6af5;
+  --accent-hover: #9182f7;
+  --accent-text:  #ffffff;
+  --tag-bg:       rgba(124, 106, 245, 0.15);
+  --tag-text:     #a99bff;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+}
+
+/* ── TipTap editor ──────────────────────────────────────────────────────────── */
+
+.tiptap {
+  outline: none;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 1.5em;
+}
+
+.tiptap p {
+  margin: 0;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--text-subtle);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+/* ── Selection ──────────────────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(124, 106, 245, 0.25);
+}

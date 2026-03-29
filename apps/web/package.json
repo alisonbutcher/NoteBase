@@ -3,8 +3,32 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "echo \"web: not yet scaffolded\"",
-    "dev": "echo \"web: not yet scaffolded\"",
-    "lint": "echo \"web: not yet scaffolded\""
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tiptap/core": "^3.21.0",
+    "@tiptap/extension-placeholder": "^3.21.0",
+    "@tiptap/pm": "^3.21.0",
+    "@tiptap/react": "^3.21.0",
+    "@tiptap/starter-kit": "^3.21.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.7.0",
+    "next": "^16.2.1",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "swr": "^2.4.1",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2"
   }
 }
